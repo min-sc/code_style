@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameHelper : MonoBehaviour
+public class GameHelper
 {
 
 }

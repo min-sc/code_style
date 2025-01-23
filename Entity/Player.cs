@@ -55,10 +55,4 @@ public class Player : Character
         Gizmos.DrawWireCube(transform.position + centerOffset, new Vector3(9f, 9f, 0f));
     }
 #endif
-
-    public void SpecialAbility()
-    {
-        //Console.WriteLine($"{Name}�� Ư�� �ɷ��� �ߵ��Ǿ����ϴ�!");
-        // Ư�� �ɷ� ���� �߰�
-    }
 }

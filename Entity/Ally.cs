@@ -56,10 +56,10 @@ public class Ally : Character
     }
 
 #if UNITY_EDITOR
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.yellow;
-    //    Gizmos.DrawWireCube(transform.position + centerOffset, new Vector3(9f, 9f, 0f));
-    //}
+    private void OnDrawGizmos()
+    {
+       Gizmos.color = Color.yellow;
+       Gizmos.DrawWireCube(transform.position + centerOffset, new Vector3(9f, 9f, 0f));
+    }
 #endif
 }

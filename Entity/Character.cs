@@ -26,26 +26,12 @@ public class Character : MonoBehaviour
     private int hitDamage;
     private bool endTurn;
 
-    public Vector2 SkillSpawnPos
-    {
-        get { return transform.Find("spawn_skill").position; }
-    }
-
-    public Transform HealSpawn
-    {
-        get { return transform.Find("spawn_heal"); }
-    }
+    public Vector2 SkillSpawnPos => transform.Find("spawn_skill").position;
+    public Transform HealSpawn => transform.Find("spawn_heal");
 
     public Character(string name, int health, int attackPower, int defensePower, float attackSpeed, float attackDistance)
     {
-        info.characterName = name;
-        info.health = health;
-        info.attackPower = attackPower;
-        info.defensePower = defensePower;
-        info.attackSpeed = attackSpeed;
-        info.attackDistance = attackDistance;
-        info.state = CharacterState.Idle;
-
+        info = new CharacterInfo(name, health, attackPower, defensePower, attackSpeed, attackDistance);
         curState = CharacterState.Idle;
     }
 
@@ -54,15 +40,16 @@ public class Character : MonoBehaviour
         anim = GetComponent<Animator>();
         spRen = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        ws = GetComponent<WeaponSpanwer>();
+
         var hpPos = transform.Find("hp_pos");
         if (hpPos != null)
         {
             hpBar = hpPos.gameObject.AddComponent<HPbar>();
             hpBar.SetHp(info.health);
-            //hpBar.Show(false);
         }
+
         currentHp = info.health;
-        ws = GetComponent<WeaponSpanwer>();
         endTurn = false;
 
         StateMachine = new StateMachine();
@@ -86,7 +73,6 @@ public class Character : MonoBehaviour
         };
 
         StateMachine.Initialize(EState.Idle);
-        //hpBar?.Show(true);
     }
 
 
@@ -140,7 +126,6 @@ public class Character : MonoBehaviour
 
     public void RangeAttack()
     {
-        Debug.Log("RangeAttack");
         ws.SpawnRange(new AttackInfo(info.attackPower, info.attackDistance, info.attackSpeed, findEnemy.transform));
     }
 
@@ -200,7 +185,8 @@ public class Character : MonoBehaviour
     
     public void AddGold(int amount)
     {
-        GameManager.Instance.frontUI.ShowAddEvent(UnityEngine.Random.Range(100, amount), GetPosition());
+        int tempGold = 100;//TODO make rule
+        GameManager.Instance.frontUI.ShowAddEvent(UnityEngine.Random.Range(tempGold, amount), GetPosition());
     }
 
     public void Die()
@@ -209,24 +195,9 @@ public class Character : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    IEnumerator SetHitColor()
-    {
-        spRen.color = new Color(1f, 0.5f, 0.5f);
-        yield return new WaitForSeconds(0.2f);
-        spRen.color = Color.white;
-    }
-
     public bool IsAlive()
     {
         return info.health > 0;
-    }
-
-    void GetHitPush(Vector2 normal)
-    {
-        if (info.unitType == UnitType.Player)
-            return;
-
-        rb?.AddForce(normal * 500);
     }
     
     public Vector2 GetPosition()
@@ -237,11 +208,6 @@ public class Character : MonoBehaviour
     public Vector2 GetLocalPosition()
     {
         return transform.localPosition;
-    }
-
-    bool IsInEnemyDis(Vector2 enemyPos)
-    {
-        return info.attackDistance > MathF.Abs(enemyPos.x - this.transform.position.x);
     }
 
     public void SetAnimation(EState state)
@@ -260,10 +226,23 @@ public class Character : MonoBehaviour
         }
     }
 
-    // IEnumerator WaitDo(float waitTime, Action doit = null)
-    // {
-    //     yield return new WaitForSeconds(waitTime);
+    private IEnumerator SetHitColor()
+    {
+        spRen.color = new Color(1f, 0.5f, 0.5f);
+        yield return new WaitForSeconds(0.2f);
+        spRen.color = Color.white;
+    }
 
-    //     doit?.Invoke();
-    // }
+    private void GetHitPush(Vector2 normal)
+    {
+        if (info.unitType == UnitType.Player)
+            return;
+
+        rb?.AddForce(normal * 500);
+    }
+
+    private bool IsInEnemyDis(Vector2 enemyPos)
+    {
+        return info.attackDistance > MathF.Abs(enemyPos.x - this.transform.position.x);
+    }
 }

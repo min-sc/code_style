@@ -7,7 +7,6 @@ public class AttackInfo
         this.damage = damage;
         this.maxDistance = maxDistance;
         this.spawnTime = time;
-        //this.point = point;
         this.tr = tr;
     }
 
@@ -15,5 +14,4 @@ public class AttackInfo
     public float maxDistance;
     public float spawnTime;
     public Transform tr;
-    //public Vector2 point;
 }
